@@ -1,0 +1,209 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Base ───────────────────────────────────────────────────────────────────── */
+@layer base {
+  * {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  html {
+    font-family: 'Inter', system-ui, sans-serif;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-surface-50 text-surface-900;
+    overflow-x: hidden;
+  }
+
+  :focus-visible {
+    @apply outline-2 outline-brand-500 outline-offset-2;
+  }
+}
+
+/* ─── Components ─────────────────────────────────────────────────────────────── */
+@layer components {
+  /* Cards */
+  .card {
+    @apply bg-white rounded-xl shadow-card border border-surface-100;
+  }
+
+  .card-hover {
+    @apply card transition-shadow duration-200 hover:shadow-card-hover;
+  }
+
+  /* Buttons */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-all duration-200
+           focus-visible:outline-2 focus-visible:outline-brand-500 focus-visible:outline-offset-2
+           disabled:opacity-50 disabled:cursor-not-allowed active:scale-95;
+  }
+
+  .btn-sm {
+    @apply btn text-xs px-3 py-1.5 min-h-[32px];
+  }
+
+  .btn-md {
+    @apply btn text-sm px-4 py-2.5 min-h-[40px];
+  }
+
+  .btn-lg {
+    @apply btn text-base px-5 py-3 min-h-[48px];
+  }
+
+  .btn-primary {
+    @apply bg-brand-600 text-white hover:bg-brand-700 active:bg-brand-800;
+  }
+
+  .btn-secondary {
+    @apply bg-surface-100 text-surface-700 hover:bg-surface-200 active:bg-surface-300;
+  }
+
+  .btn-danger {
+    @apply bg-red-500 text-white hover:bg-red-600 active:bg-red-700;
+  }
+
+  .btn-ghost {
+    @apply bg-transparent text-surface-600 hover:bg-surface-100 active:bg-surface-200;
+  }
+
+  .btn-outline {
+    @apply border border-surface-300 bg-white text-surface-700 hover:bg-surface-50 active:bg-surface-100;
+  }
+
+  .btn-success {
+    @apply bg-emerald-600 text-white hover:bg-emerald-700;
+  }
+
+  /* Form Elements */
+  .input {
+    @apply w-full px-3.5 py-2.5 rounded-lg border border-surface-300 bg-white text-surface-900
+           placeholder-surface-400 text-sm
+           focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500
+           disabled:bg-surface-50 disabled:text-surface-500 disabled:cursor-not-allowed
+           transition-colors duration-200;
+  }
+
+  .input-error {
+    @apply border-red-400 focus:ring-red-500 focus:border-red-500;
+  }
+
+  .label {
+    @apply block text-sm font-medium text-surface-700 mb-1;
+  }
+
+  .select {
+    @apply input appearance-none cursor-pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2364748b' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 36px;
+  }
+
+  .textarea {
+    @apply input resize-none;
+  }
+
+  /* Status Badges */
+  .badge {
+    @apply inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold;
+  }
+
+  /* Mobile bottom nav safe area */
+  .pb-safe {
+    padding-bottom: calc(80px + env(safe-area-inset-bottom));
+  }
+
+  /* Scrollable filter chips */
+  .filter-chips {
+    @apply flex gap-2 overflow-x-auto pb-1;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .filter-chips::-webkit-scrollbar {
+    display: none;
+  }
+
+  .filter-chip {
+    @apply flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium border transition-all duration-200
+           whitespace-nowrap cursor-pointer;
+  }
+
+  .filter-chip-active {
+    @apply bg-brand-600 text-white border-brand-600;
+  }
+
+  .filter-chip-inactive {
+    @apply bg-white text-surface-600 border-surface-300 hover:border-brand-400 hover:text-brand-600;
+  }
+
+  /* Page header */
+  .page-title {
+    @apply text-xl font-bold text-surface-900;
+  }
+
+  /* Bottom sheet overlay */
+  .overlay {
+    @apply fixed inset-0 bg-black/50 z-40 animate-fade-in;
+  }
+
+  /* Section heading */
+  .section-title {
+    @apply text-sm font-semibold text-surface-500 uppercase tracking-wider;
+  }
+}
+
+/* ─── Utilities ──────────────────────────────────────────────────────────────── */
+@layer utilities {
+  .truncate-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .safe-left {
+    padding-left: max(1rem, env(safe-area-inset-left));
+  }
+
+  .safe-right {
+    padding-right: max(1rem, env(safe-area-inset-right));
+  }
+
+  /* Break long URLs */
+  .break-url {
+    word-break: break-all;
+    overflow-wrap: anywhere;
+  }
+}
+
+/* ─── Scrollbar Styling ──────────────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-surface-300 rounded-full;
+}
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-surface-400;
+}
+
+/* ─── Toast Overrides ────────────────────────────────────────────────────────── */
+.Toastify__toast-container--bottom-center {
+  bottom: 100px !important;
+}
+
+/* ─── Mobile-specific ────────────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .modal-mobile {
+    @apply fixed inset-x-0 bottom-0 rounded-t-2xl rounded-b-none max-h-[90vh] overflow-y-auto animate-slide-up;
+  }
+}
