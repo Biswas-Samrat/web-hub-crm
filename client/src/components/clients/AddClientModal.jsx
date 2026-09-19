@@ -77,7 +77,7 @@ export default function AddClientModal({ onClose, onSuccess, prefillUrl = '' }) 
   };
 
   return (
-    <Modal isOpen={true} onClose={onClose} title="Add Client" size="md">
+    <Modal isOpen={true} onClose={onClose} title="Add Client" size="lg">
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Facebook URL — most important field */}
         <div>
@@ -96,36 +96,37 @@ export default function AddClientModal({ onClose, onSuccess, prefillUrl = '' }) 
           />
         </div>
 
-        {/* Business Name */}
-        <div>
-          <label htmlFor="biz-name" className="label">
-            Business Name <span className="text-red-500">*</span>
-          </label>
-          <input
-            id="biz-name"
-            type="text"
-            value={form.businessName}
-            onChange={set('businessName')}
-            className="input"
-            placeholder="e.g. ABC Cleaning Services"
-          />
-        </div>
+        {/* Business Name & Contact Name row on laptop */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+          <div>
+            <label htmlFor="biz-name" className="label">
+              Business Name <span className="text-red-500">*</span>
+            </label>
+            <input
+              id="biz-name"
+              type="text"
+              value={form.businessName}
+              onChange={set('businessName')}
+              className="input"
+              placeholder="e.g. ABC Cleaning Services"
+            />
+          </div>
 
-        {/* Contact Name */}
-        <div>
-          <label htmlFor="contact-name" className="label">Contact Person</label>
-          <input
-            id="contact-name"
-            type="text"
-            value={form.contactName}
-            onChange={set('contactName')}
-            className="input"
-            placeholder="e.g. Sarah Johnson"
-          />
+          <div>
+            <label htmlFor="contact-name" className="label">Contact Person</label>
+            <input
+              id="contact-name"
+              type="text"
+              value={form.contactName}
+              onChange={set('contactName')}
+              className="input"
+              placeholder="e.g. Sarah Johnson"
+            />
+          </div>
         </div>
 
         {/* Category + Country row */}
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 gap-3 sm:gap-4">
           <div>
             <label className="label">Category</label>
             <select value={form.category} onChange={set('category')} className="select">
@@ -166,18 +167,21 @@ export default function AddClientModal({ onClose, onSuccess, prefillUrl = '' }) 
         </div>
 
         {/* Optional fields (collapsible) */}
-        <details className="group">
-          <summary className="text-sm text-brand-600 cursor-pointer hover:text-brand-700 font-medium select-none">
-            + More details (phone, email, notes)
+        <details className="group border border-surface-200 rounded-xl p-3 bg-surface-50/50">
+          <summary className="text-sm text-brand-600 cursor-pointer hover:text-brand-700 font-medium select-none list-none flex items-center justify-between">
+            <span>+ More details (phone, email, website, notes)</span>
+            <span className="text-xs text-surface-400 group-open:rotate-180 transition-transform">▼</span>
           </summary>
-          <div className="mt-3 space-y-3">
-            <div>
-              <label className="label">Phone</label>
-              <input type="tel" value={form.phone} onChange={set('phone')} className="input" placeholder="+44..." />
-            </div>
-            <div>
-              <label className="label">Email</label>
-              <input type="email" value={form.email} onChange={set('email')} className="input" />
+          <div className="mt-3 space-y-3 pt-2 border-t border-surface-200/60">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+              <div>
+                <label className="label">Phone</label>
+                <input type="tel" value={form.phone} onChange={set('phone')} className="input" placeholder="+44..." />
+              </div>
+              <div>
+                <label className="label">Email</label>
+                <input type="email" value={form.email} onChange={set('email')} className="input" placeholder="contact@example.com" />
+              </div>
             </div>
             <div>
               <label className="label">Website</label>
@@ -207,14 +211,23 @@ export default function AddClientModal({ onClose, onSuccess, prefillUrl = '' }) 
           </div>
         )}
 
-        {/* Submit */}
-        <button
-          type="submit"
-          disabled={loading}
-          className="btn-lg btn-primary w-full"
-        >
-          {loading ? 'Saving...' : 'Save Client'}
-        </button>
+        {/* Actions */}
+        <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-2.5 pt-2">
+          <button
+            type="button"
+            onClick={onClose}
+            className="btn-md btn-secondary w-full sm:w-auto"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            disabled={loading}
+            className="btn-lg sm:btn-md btn-primary w-full sm:w-auto sm:min-w-[130px]"
+          >
+            {loading ? 'Saving...' : 'Save Client'}
+          </button>
+        </div>
       </form>
     </Modal>
   );
