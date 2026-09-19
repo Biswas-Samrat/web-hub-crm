@@ -25,7 +25,12 @@ export default function LoginPage() {
         await register({ name: form.name, email: form.email, password: form.password });
       }
     } catch (err) {
-      setError(err.response?.data?.message || 'An error occurred. Please try again.');
+      setError(
+        err.response?.data?.message ||
+        (err.code === 'ECONNABORTED' ? 'Server took too long to respond. It may be waking up, please try again.' : '') ||
+        err.message ||
+        'An error occurred. Please try again.'
+      );
     } finally {
       setLoading(false);
     }

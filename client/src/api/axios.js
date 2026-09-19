@@ -1,11 +1,21 @@
 import axios from 'axios';
 
+const getBaseURL = () => {
+  let url = (import.meta.env.VITE_API_URL || '/api').trim();
+  url = url.replace(/\/+$/, ''); // Remove trailing slashes
+  // If it's an absolute URL and doesn't end with /api, append /api
+  if (url.startsWith('http') && !url.endsWith('/api')) {
+    url += '/api';
+  }
+  return url;
+};
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || '/api',
+  baseURL: getBaseURL(),
   headers: {
     'Content-Type': 'application/json',
   },
-  timeout: 15000,
+  timeout: 30000,
 });
 
 // ─── Request interceptor: attach JWT ──────────────────────────────────────────
