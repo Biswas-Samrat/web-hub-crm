@@ -271,23 +271,93 @@ clientSchema.pre('save', function (next) {
 });
 
 function normalizeFacebookUrl(url) {
-  if (!url) return '';
+  if (!url || typeof url !== 'string') return '';
+  let str = url.trim();
+  if (!str) return '';
+
+  // Ensure protocol for URL parser
+  if (!/^https?:\/\//i.test(str)) {
+    str = 'https://' + str;
+  }
+
   try {
-    let normalized = url.toLowerCase().trim();
-    // Remove trailing slash
+    const parsed = new URL(str);
+    let hostname = parsed.hostname.toLowerCase();
+
+    // Standardize facebook domains
+    if (
+      hostname === 'facebook.com' ||
+      hostname.endsWith('.facebook.com') ||
+      hostname === 'fb.com' ||
+      hostname.endsWith('.fb.com') ||
+      hostname === 'fb.me' ||
+      hostname.endsWith('.fb.me')
+    ) {
+      hostname = 'www.facebook.com';
+    }
+
+    let pathname = parsed.pathname.toLowerCase().replace(/\/+$/, '');
+    if (!pathname) pathname = '';
+
+    // If it's a numeric ID profile URL: profile.php?id=...
+    if (pathname === '/profile.php' || pathname.endsWith('/profile.php')) {
+      const id = parsed.searchParams.get('id');
+      if (id) {
+        return `https://${hostname}/profile.php?id=${id.trim().toLowerCase()}`;
+      }
+      return `https://${hostname}/profile.php`;
+    }
+
+    // If URL has specific identity query params (id or page_id)
+    if (parsed.searchParams.has('id')) {
+      const id = parsed.searchParams.get('id');
+      return `https://${hostname}${pathname}?id=${id.trim().toLowerCase()}`;
+    }
+    if (parsed.searchParams.has('page_id')) {
+      const pageId = parsed.searchParams.get('page_id');
+      return `https://${hostname}${pathname}?page_id=${pageId.trim().toLowerCase()}`;
+    }
+
+    // For vanity URLs / pages / people paths (strip tracking params like fbclid, mibextid, ref, etc.)
+    return `https://${hostname}${pathname}`;
+  } catch {
+    let normalized = str.toLowerCase().trim();
     normalized = normalized.replace(/\/+$/, '');
-    // Remove query params and hash
+    const match = normalized.match(/profile\.php\?id=([0-9a-zA-Z._-]+)/i);
+    if (match) {
+      return `https://www.facebook.com/profile.php?id=${match[1]}`;
+    }
     normalized = normalized.split('?')[0].split('#')[0];
-    // Normalize www
     normalized = normalized.replace(/^https?:\/\/(www\.)?/, 'https://www.');
     return normalized;
-  } catch {
-    return url.toLowerCase().trim();
   }
 }
 
 // ─── Static method: normalize URL ─────────────────────────────────────────────
 clientSchema.statics.normalizeFacebookUrl = normalizeFacebookUrl;
+
+// ─── Static method: repair existing records ──────────────────────────────────
+clientSchema.statics.repairNormalizedUrls = async function () {
+  try {
+    const clients = await this.find({ facebookUrl: { $exists: true, $ne: '' } });
+    let fixed = 0;
+    for (const client of clients) {
+      const correctNormalized = normalizeFacebookUrl(client.facebookUrl);
+      if (client.facebookUrlNormalized !== correctNormalized) {
+        await this.updateOne(
+          { _id: client._id },
+          { $set: { facebookUrlNormalized: correctNormalized } }
+        );
+        fixed++;
+      }
+    }
+    if (fixed > 0) {
+      console.log(`🔧 Repaired ${fixed} client Facebook normalized URLs in database.`);
+    }
+  } catch (err) {
+    console.error('Error repairing Facebook normalized URLs:', err.message);
+  }
+};
 
 // ─── Instance method: add activity ─────────────────────────────────────────────
 clientSchema.methods.addActivity = function (type, message, metadata = {}) {

@@ -150,6 +150,21 @@ export const displayUrl = (url) => {
 // ─── Facebook profile shortname ────────────────────────────────────────────────
 export const extractFacebookHandle = (url) => {
   if (!url) return '';
-  const match = url.match(/facebook\.com\/([^/?#]+)/i);
-  return match ? match[1] : displayUrl(url);
+  try {
+    const raw = url.trim();
+    if (raw.includes('profile.php')) {
+      const matchId = raw.match(/id=([0-9a-zA-Z._-]+)/i);
+      if (matchId) return `profile.php?id=${matchId[1]}`;
+    }
+    const matchPeople = raw.match(/facebook\.com\/(?:people|pages|p)\/([^/?#]+)/i);
+    if (matchPeople) return matchPeople[1];
+
+    const match = raw.match(/facebook\.com\/([^/?#]+)/i);
+    if (match && match[1] && match[1].toLowerCase() !== 'profile.php') {
+      return match[1];
+    }
+    return displayUrl(raw);
+  } catch {
+    return displayUrl(url);
+  }
 };

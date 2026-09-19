@@ -152,7 +152,7 @@ const createClient = async (req, res, next) => {
     if (existing) {
       return res.status(409).json({
         success: false,
-        message: 'This Facebook profile already exists in your CRM.',
+        message: `This Facebook profile already exists in your CRM (${existing.businessName}).`,
         existingClient: {
           id: existing._id,
           businessName: existing.businessName,
@@ -235,8 +235,12 @@ const updateClient = async (req, res, next) => {
       if (existing) {
         return res.status(409).json({
           success: false,
-          message: 'This Facebook profile already exists in your CRM.',
-          existingClient: { id: existing._id, businessName: existing.businessName },
+          message: `This Facebook profile already exists in your CRM (${existing.businessName}).`,
+          existingClient: {
+            id: existing._id,
+            businessName: existing.businessName,
+            status: existing.status,
+          },
         });
       }
     }
@@ -597,6 +601,7 @@ const importCSV = async (req, res, next) => {
         const existing = await Client.findOne({
           userId: req.user._id,
           facebookUrlNormalized: normalized,
+          isArchived: false,
         });
 
         if (existing) {

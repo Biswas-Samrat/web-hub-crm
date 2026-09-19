@@ -81,10 +81,13 @@ app.use('/api/*', (req, res) => {
 // ─── Global Error Handler ─────────────────────────────────────────────────────
 app.use(errorHandler);
 
+const Client = require('./src/models/Client');
+
 // ─── Start Server ─────────────────────────────────────────────────────────────
 const startServer = async () => {
   try {
     await connectDB();
+    await Client.repairNormalizedUrls();
     app.listen(PORT, '0.0.0.0', () => {
       console.log(`\n🚀 Web Hub CRM Server running on port ${PORT}`);
       console.log(`📊 Environment: ${process.env.NODE_ENV || 'development'}`);

@@ -197,14 +197,25 @@ export default function AddClientModal({ onClose, onSuccess, prefillUrl = '' }) 
         {/* Error */}
         {error && (
           <div className="bg-red-50 border border-red-200 rounded-lg p-3 text-sm text-red-600">
-            {error}
-            {duplicateInfo && (
-              <div className="mt-2 flex gap-2">
+            <p className="font-medium">{error}</p>
+            {duplicateInfo?.existingClient && (
+              <div className="mt-2.5 pt-2 border-t border-red-200/60 flex items-center justify-between gap-2 flex-wrap">
+                <div className="text-xs text-red-700">
+                  Existing profile:{' '}
+                  <span className="font-semibold text-red-900">
+                    {duplicateInfo.existingClient.businessName}
+                  </span>
+                  {duplicateInfo.existingClient.status && (
+                    <span className="ml-1.5 opacity-80">
+                      ({duplicateInfo.existingClient.status})
+                    </span>
+                  )}
+                </div>
                 <a
-                  href={`/clients/${duplicateInfo.existingClient?.id}`}
-                  className="btn-sm btn-outline text-xs"
+                  href={`/clients/${duplicateInfo.existingClient.id}`}
+                  className="btn-sm btn-outline text-xs bg-white hover:bg-red-50 border-red-300 text-red-700"
                 >
-                  Open Existing Client
+                  View Existing Client
                 </a>
               </div>
             )}
