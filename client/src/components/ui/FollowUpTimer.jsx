@@ -1,40 +1,53 @@
 import { useEffect, useState } from 'react';
-import { getFollowUpStatus, urgencyClasses } from '../../utils/helpers';
+import { calculateTimeRemaining } from './LiveCountdownTimer';
 import { Clock, AlertTriangle } from 'lucide-react';
 
-export default function FollowUpTimer({ followUpAt, compact = false }) {
-  const [status, setStatus] = useState(() => getFollowUpStatus(followUpAt));
+export default function FollowUpTimer({ followUpAt, compact = false, live = true }) {
+  const [time, setTime] = useState(() => calculateTimeRemaining(followUpAt));
 
-  // Update every minute
   useEffect(() => {
     if (!followUpAt) return;
-    const interval = setInterval(() => {
-      setStatus(getFollowUpStatus(followUpAt));
-    }, 60000);
-    return () => clearInterval(interval);
-  }, [followUpAt]);
+    setTime(calculateTimeRemaining(followUpAt));
+    if (live) {
+      const interval = setInterval(() => {
+        setTime(calculateTimeRemaining(followUpAt));
+      }, 1000);
+      return () => clearInterval(interval);
+    }
+  }, [followUpAt, live]);
 
-  if (!followUpAt || !status) return null;
+  if (!followUpAt || !time) return null;
 
-  const isOverdue = status.urgency === 'overdue';
-  const isToday = status.urgency === 'today';
+  const { isOverdue, urgency, formatted } = time;
+
+  const urgencyClasses = {
+    overdue: 'text-red-600 font-semibold',
+    critical: 'text-orange-600 font-semibold',
+    today: 'text-amber-600 font-semibold',
+    soon: 'text-blue-600 font-medium',
+    upcoming: 'text-surface-600 font-medium',
+  };
+
+  const urgencyClass = urgencyClasses[urgency] || urgencyClasses.upcoming;
 
   if (compact) {
     return (
-      <span className={`text-xs font-medium ${urgencyClasses[status.urgency]}`}>
-        {status.shortLabel}
+      <span className={`text-xs font-mono font-semibold ${urgencyClass}`}>
+        {isOverdue ? `-${formatted}` : formatted}
       </span>
     );
   }
 
   return (
-    <div className={`inline-flex items-center gap-1.5 text-xs font-medium ${urgencyClasses[status.urgency]}`}>
+    <div className={`inline-flex items-center gap-1.5 text-xs font-medium ${urgencyClass}`}>
       {isOverdue ? (
-        <AlertTriangle size={12} className="flex-shrink-0" />
+        <AlertTriangle size={13} className="flex-shrink-0 text-red-500" />
       ) : (
-        <Clock size={12} className="flex-shrink-0" />
+        <Clock size={13} className="flex-shrink-0 text-brand-500" />
       )}
-      {status.label}
+      <span>{isOverdue ? 'Overdue:' : 'Due in:'}</span>
+      <span className="font-mono font-bold">{formatted}</span>
     </div>
   );
 }
+
