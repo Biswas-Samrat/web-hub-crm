@@ -2,7 +2,8 @@ import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import {
   ArrowLeft, ExternalLink, Edit2, Save, X, Plus, Globe, Phone, Mail,
-  Tag, Calendar, CheckCircle, Clock, Briefcase, Monitor, AlertTriangle, Trash2
+  Tag, Calendar, CheckCircle, Clock, Briefcase, Monitor, AlertTriangle, Trash2,
+  MessageCircle, Sparkles
 } from 'lucide-react';
 import { getClient, updateClient, updateDemo, updateProject, convertToProject, addActivity, archiveClient } from '../api/clients';
 import StatusBadge from '../components/ui/StatusBadge';
@@ -91,6 +92,7 @@ export default function ClientDetailPage() {
 
   const TABS = [
     { id: 'info', label: 'Info' },
+    { id: 'messages', label: 'Messenger Chat' },
     { id: 'followup', label: 'Follow-Up' },
     { id: 'demo', label: 'Demo' },
     { id: 'project', label: 'Project' },
@@ -124,6 +126,12 @@ export default function ClientDetailPage() {
 
       {/* Quick actions bar */}
       <div className="flex gap-2 overflow-x-auto pb-1">
+        <button
+          onClick={() => navigate(`/clients/${id}/messages`)}
+          className="btn-sm bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 whitespace-nowrap shadow-sm font-medium"
+        >
+          <MessageCircle size={14} /> Messenger Chat & Media
+        </button>
         <button onClick={() => setShowStatusModal(true)} className="btn-sm btn-outline whitespace-nowrap">
           <Tag size={13} /> Status
         </button>
@@ -187,6 +195,27 @@ export default function ClientDetailPage() {
           onSave={handleSave}
           saving={saving}
         />
+      )}
+      {activeTab === 'messages' && (
+        <div className="card p-6 text-center space-y-4">
+          <div className="w-16 h-16 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mx-auto shadow-sm">
+            <MessageCircle size={32} />
+          </div>
+          <div>
+            <h3 className="text-base font-semibold text-surface-900">Facebook Messenger Conversation</h3>
+            <p className="text-xs text-surface-500 max-w-md mx-auto mt-1">
+              Upload raw chat logs, paste messages, upload photos/videos/audio via Cloudinary, and generate Gemini AI insights for {client.businessName}.
+            </p>
+          </div>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+            <button
+              onClick={() => navigate(`/clients/${id}/messages`)}
+              className="btn btn-primary w-full sm:w-auto gap-2"
+            >
+              <MessageCircle size={16} /> Open Messenger Interface
+            </button>
+          </div>
+        </div>
       )}
       {activeTab === 'followup' && (
         <FollowUpTab client={client} onFollowUp={() => setShowFollowUp(true)} onUpdate={load} />

@@ -11,6 +11,8 @@ import OngoingPage from './pages/OngoingPage';
 import DeliveredPage from './pages/DeliveredPage';
 import CompletedPage from './pages/CompletedPage';
 import CalendarPage from './pages/CalendarPage';
+import ConversationPage from './pages/ConversationPage';
+import MediaUploadPage from './pages/MediaUploadPage';
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
@@ -37,6 +39,9 @@ function AppRoutes() {
         <Route index element={<DashboardPage />} />
         <Route path="clients" element={<ClientsPage />} />
         <Route path="clients/:id" element={<ClientDetailPage />} />
+        <Route path="clients/:id/messages" element={<ConversationPage />} />
+        <Route path="clients/:id/conversation" element={<ConversationPage />} />
+        <Route path="media-upload" element={<MediaUploadPage />} />
         <Route path="follow-ups" element={<FollowUpsPage />} />
         <Route path="ongoing" element={<OngoingPage />} />
         <Route path="delivered" element={<DeliveredPage />} />

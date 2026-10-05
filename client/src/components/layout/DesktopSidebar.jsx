@@ -1,7 +1,7 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, Users, Bell, Briefcase, MoreHorizontal, LogOut,
-  ChevronDown, ChevronRight, Clock, CheckCircle2, Globe
+  ChevronDown, ChevronRight, Clock, CheckCircle2, Globe, Cloud
 } from 'lucide-react';
 import { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
@@ -20,6 +20,7 @@ const navItems = [
     ],
   },
   { to: '/calendar', icon: Clock, label: 'Calendar' },
+  { to: '/media-upload', icon: Cloud, label: 'Media & Cloudinary' },
 ];
 
 export default function DesktopSidebar() {

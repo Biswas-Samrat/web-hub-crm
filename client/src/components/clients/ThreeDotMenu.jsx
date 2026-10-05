@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Eye, Edit2, Tag, Clock, StickyNote, Monitor, Briefcase, Archive, Trash2, X, ArrowRight
+  Eye, Edit2, Tag, Clock, StickyNote, Monitor, Briefcase, Archive, Trash2, X, ArrowRight, MessageCircle
 } from 'lucide-react';
 import { useState } from 'react';
 import { archiveClient, deleteClient } from '../../api/clients';
@@ -43,7 +43,8 @@ export default function ThreeDotMenu({ client, onClose, onUpdate }) {
   };
 
   const menuItems = [
-    { icon: Eye, label: 'View', action: () => { navigate(`/clients/${client._id}`); onClose(); } },
+    { icon: Eye, label: 'View Details', action: () => { navigate(`/clients/${client._id}`); onClose(); } },
+    { icon: MessageCircle, label: 'Messenger Chat & Media', action: () => { navigate(`/clients/${client._id}/messages`); onClose(); } },
     { icon: Edit2, label: 'Edit', action: () => { navigate(`/clients/${client._id}?edit=true`); onClose(); } },
     { icon: Tag, label: 'Change Status', action: () => setShowStatusModal(true) },
     { icon: Clock, label: 'Set Follow-Up', action: () => setShowFollowUp(true) },

@@ -1,9 +1,10 @@
 import { useNavigate } from 'react-router-dom';
-import { Globe, CheckCircle2, Clock, LogOut, X } from 'lucide-react';
+import { Globe, CheckCircle2, Clock, LogOut, X, Cloud } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const menuItems = [
+  { to: '/media-upload', icon: Cloud, label: 'Media & Cloudinary' },
   { to: '/delivered', icon: Globe, label: 'Delivered' },
   { to: '/completed', icon: CheckCircle2, label: 'Completed' },
   { to: '/calendar', icon: Clock, label: 'Calendar' },
